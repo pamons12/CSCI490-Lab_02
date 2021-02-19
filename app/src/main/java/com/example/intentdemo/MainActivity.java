@@ -1,6 +1,8 @@
 package com.example.intentdemo;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,28 +13,33 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button enterButton;
+    public static final int REQUEST_CODE = 0;
     private Intent mainActivityIntent;
-    private EditText editText;
+    private Button changeBackgroundButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editText = findViewById(R.id.plain_text_input);
-        enterButton = findViewById(R.id.button);
-
         mainActivityIntent = new Intent(this, SecondActivity.class);
+        changeBackgroundButton = findViewById(R.id.setBackgroundButton);
 
-        enterButton.setOnClickListener(new View.OnClickListener() {
+        changeBackgroundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s = editText.getText().toString();
-                mainActivityIntent.putExtra("testString", s);
-
-                startActivity(mainActivityIntent);
+                startActivityForResult(mainActivityIntent,REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bundle extras = data.getExtras();
+        int imageID = extras.getInt("imageID");
+        ConstraintLayout currentLayout = findViewById(R.id.main_layout);
+        currentLayout.setBackground(getDrawable(imageID));
+
     }
 }
